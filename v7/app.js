@@ -10,6 +10,10 @@ var Comment = require('./models/comment');
 var User  = require("./models/user");
 var seedDB = require('./seeds')
 
+var commentRoutes = require('./routes/comments'),
+	campgroundRoutes = require('./routes/campgrounds'),
+	indexRoutes = require('./routes/index');
+
 seedDB();
 mongoose.connect("mongodb://localhost:27017/yelp_camp_v6",{useNewUrlParser : true});
 app.use(bodyParser.urlencoded({extended: true}));
@@ -32,51 +36,10 @@ app.use(function(req, res, next){
 	next();
 });
 
-app.get("/",function(req, res){
-	res.render("landing");
-});
+app.use(indexRoutes);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/comments", commentRoutes);
 
-
-app.get("/register", function(req, res){
-	res.render("register");
-});
-
-app.post("/register",function(req, res){
-	var newUser = new User({username : req.body.username});
-	User.register(newUser, req.body.password, function(err, user){
-		if(err){
-			console.log(err);
-			return res.render("register");
-		}
-		passport.authenticate("local")(req, res, function(){
-			 res.redirect("/campgrounds");
-		});
-	});	
-});
-
-app.get("/login", function(req, res){
-	res.render("login");
-});
-
-app.post("/login",passport.authenticate("local", 
-	{
-	successRedirect : "/campgrounds", 
-	failureRedirect : "/login"
-	}),function(req, res){
-
-});
-
-app.get("/logout", function(req, res){
-	req.logout();
-	res.redirect("/campgrounds");
-});
-
-function isLoggedin(req, res, next){
-	if(req.isAuthenticated()){
-		return next();
-	}
-	res.redirect("/login");
-}
 
 app.listen(3000, 'localhost',function(){
 	console.log("Server has Started on PORT 3000");

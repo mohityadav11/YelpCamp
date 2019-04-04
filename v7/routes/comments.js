@@ -1,8 +1,10 @@
-//===============
-// COMMENTS ROUTES
-//===============
 
-app.get("/campgrounds/:id/comments/new",isLoggedin,function(req,res){
+var express = require('express');
+var router = express.Router({mergeParams : true});
+var campground = require('../models/campground');
+var Comment = require('../models/comment');
+
+router.get("/new",isLoggedin,function(req,res){
 	
 	campground.findById(req.params.id,function(err, campground){
 		if(err){
@@ -15,7 +17,7 @@ app.get("/campgrounds/:id/comments/new",isLoggedin,function(req,res){
 
 });
 
-app.post("/campgrounds/:id/comments",isLoggedin,function(req,res){
+router.post("/",isLoggedin,function(req,res){
 	campground.findById(req.params.id,function(err, campground){
 		if(err){
 			console.log(err);
@@ -35,3 +37,12 @@ app.post("/campgrounds/:id/comments",isLoggedin,function(req,res){
 		}
 	});
 });
+
+function isLoggedin(req, res, next){
+	if(req.isAuthenticated()){
+		return next();
+	}
+	res.redirect("/login");
+}
+
+module.exports = router;

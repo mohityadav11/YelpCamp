@@ -1,4 +1,9 @@
-app.get("/campgrounds", function(req, res){
+
+var express = require('express');
+var router = express.Router();
+var campground = require('../models/campground');
+
+router.get("/", function(req, res){
 	campground.find({}, function(err, allCampgrounds){
 		if(err){
 			console.log(err);
@@ -9,7 +14,7 @@ app.get("/campgrounds", function(req, res){
 	});
 });
 
-app.post("/campgrounds", function(req, res){
+router.post("/", function(req, res){
 	var name = req.body.name;
 	var image = req.body.image;
 	var desc = req.body.description;
@@ -24,11 +29,11 @@ app.post("/campgrounds", function(req, res){
 	});
 });
 
-app.get("/campgrounds/new", function(req, res){
+router.get("/new", function(req, res){
 	res.render("campgrounds/new");
 });
 
-app.get("/campgrounds/:id", function(req, res){
+router.get("/:id", function(req, res){
 	campground.findById(req.params.id).populate("comments").exec(function(err, foundcampground){
 		if(err){
 			console.log(err);
@@ -38,5 +43,6 @@ app.get("/campgrounds/:id", function(req, res){
 			res.render("campgrounds/show", {campground:foundcampground});
 		}
 	});
-
 });
+
+module.exports = router;
