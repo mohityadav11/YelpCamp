@@ -9,7 +9,8 @@ var methodOverride = require('method-override');
 var campground = require('./models/campground');
 var Comment = require('./models/comment');
 var User  = require("./models/user");
-var seedDB = require('./seeds')
+var seedDB = require('./seeds');
+var flash = require('connect-flash');
 
 var commentRoutes = require('./routes/comments'),
 	campgroundRoutes = require('./routes/campgrounds'),
@@ -21,6 +22,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
+app.use(flash());
+
 
 app.use(require('express-session')({
 	secret : "Its a Secret!",
