@@ -16,8 +16,10 @@ var commentRoutes = require('./routes/comments'),
 	campgroundRoutes = require('./routes/campgrounds'),
 	indexRoutes = require('./routes/index');
 
-// seedDB();
-mongoose.connect("mongodb://localhost:27017/yelp_camp_v6",{useNewUrlParser : true});
+var url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp_v6";
+
+mongoose.connect(url,{useNewUrlParser : true});
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -49,10 +51,10 @@ app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 
 
-app.listen(3000, 'localhost',function(){
-	console.log("Server has Started on PORT 3000");
+
+var port = process.env.PORT || 3000;
+
+app.listen(port,function(){
+	console.log("Running YelpCamp Server");
 });
-
-
-
 
